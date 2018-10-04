@@ -10,6 +10,7 @@ load(
     "transitive_hdrs",
 )
 load("//third_party/mkl:build_defs.bzl", "if_mkl")
+load("//third_party/openblas:build_defs.bzl", "if_openblas")
 load("//tensorflow:tensorflow.bzl", "if_cuda")
 load("@local_config_syslibs//:build_defs.bzl", "if_not_system_lib")
 load("//tensorflow/core:platform/default/build_config_root.bzl", "tf_additional_license_deps")
@@ -189,7 +190,7 @@ sh_binary(
             "//tensorflow/contrib/lite/python:tflite_convert",
             "//tensorflow/contrib/lite/toco/python:toco_from_protos",
         ],
-    }) + if_mkl(["//third_party/mkl:intel_binary_blob"]),
+    }) + if_mkl(["//third_party/mkl:intel_binary_blob"]) + if_openblas(["//third_party/openblas:openblas_blob"]),
 )
 
 # A genrule for generating a marker file for the pip package on Windows

@@ -96,6 +96,16 @@ function prepare_src() {
           mkdir "${TMPDIR}/${so_lib_dir}"
           cp -R ${RUNFILES}/${so_lib_dir}/${mkl_so_dir} "${TMPDIR}/${so_lib_dir}"
         fi
+        openblas_so_dir=$(ls ${RUNFILES}/${so_lib_dir} | grep openblas) || true
+        if [ -n "${openblas_so_dir}" ]; then
+          mkdir "${TMPDIR}/${so_lib_dir}"
+          cp -R ${RUNFILES}/${so_lib_dir}/${openblas_so_dir} "${TMPDIR}/${so_lib_dir}"
+        fi
+        armpl_so_dir=$(ls ${RUNFILES}/${so_lib_dir} | grep armpl) || true
+        if [ -n "${armpl_so_dir}" ]; then
+          mkdir "${TMPDIR}/${so_lib_dir}"
+          cp -R ${RUNFILES}/${so_lib_dir}/${armpl_so_dir} "${TMPDIR}/${so_lib_dir}"
+        fi
       fi
     else
       # New-style runfiles structure (--nolegacy_external_runfiles).
@@ -112,6 +122,16 @@ function prepare_src() {
         if [ -n "${mkl_so_dir}" ]; then
           mkdir "${TMPDIR}/${so_lib_dir}"
           cp -R ${RUNFILES}/${so_lib_dir}/${mkl_so_dir} "${TMPDIR}/${so_lib_dir}"
+        fi
+        openblas_so_dir=$(ls ${RUNFILES}/${so_lib_dir} | grep openblas) || true
+        if [ -n "${openblas_so_dir}" ]; then
+          mkdir "${TMPDIR}/${so_lib_dir}"
+          cp -R ${RUNFILES}/${so_lib_dir}/${openblas_so_dir} "${TMPDIR}/${so_lib_dir}"
+        fi
+        armpl_so_dir=$(ls ${RUNFILES}/${so_lib_dir} | grep armpl) || true
+        if [ -n "${armpl_so_dir}" ]; then
+          mkdir "${TMPDIR}/${so_lib_dir}"
+          cp -R ${RUNFILES}/${so_lib_dir}/${armpl_so_dir} "${TMPDIR}/${so_lib_dir}"
         fi
       fi
     fi

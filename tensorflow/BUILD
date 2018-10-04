@@ -438,6 +438,20 @@ filegroup(
     data = glob(["docs_src/**/*.md"]),
 )
 
+load(
+    "//third_party/openblas:build_defs.bzl",
+    "if_openblas",
+)
+
+filegroup(
+    name = "openblas_blob",
+    data = if_openblas(
+        [
+            "//third_party/openblas:openblas_blob",
+        ],
+    ),
+)
+
 cc_library(
     name = "grpc",
     deps = select({

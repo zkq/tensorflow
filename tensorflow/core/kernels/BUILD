@@ -52,6 +52,11 @@ load(
     "//third_party/mkl:build_defs.bzl",
     "if_mkl",
 )
+load(
+    "//third_party/openblas:build_defs.bzl",
+    "if_openblas",
+    "openblas_deps",
+)
 load("@local_config_cuda//cuda:build_defs.bzl", "if_cuda")
 
 config_setting(
@@ -2881,6 +2886,8 @@ tf_kernel_library(
         "matmul_op.cc",
     ] + if_mkl([
         "mkl_matmul_op.cc",
+    ]) + if_openblas([
+        "openblas_matmul_op.cc",
     ]),
     hdrs = ["matmul_op.h"],
     # Override EIGEN_STRONG_INLINE to inline when --define=override_eigen_strong_inline=true,
@@ -2903,7 +2910,7 @@ tf_kernel_library(
     }) + if_mkl([
         "//third_party/mkl:intel_binary_blob",
         "@mkl_dnn",
-    ]) + if_cuda([
+    ]) + openblas_deps() + if_cuda([
         "//tensorflow/core/platform/default/build_config:cublas_plugin",
     ]),
 )

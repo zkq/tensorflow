@@ -31,6 +31,9 @@ build:mkl -c opt
 # without depending on MKL binary version.
 build:mkl_open_source_only --define=using_mkl_dnn_only=true
 
+build:openblas --define=build_with_openblas=true --define=enable_openblas=true
+build:openblas -c opt
+
 build:download_clang --crosstool_top=@local_config_download_clang//:toolchain
 build:download_clang --define=using_clang=true
 

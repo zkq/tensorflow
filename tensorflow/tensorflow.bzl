@@ -28,6 +28,11 @@ load(
     "//third_party/mkl_dnn:build_defs.bzl",
     "if_mkl_open_source_only",
 )
+load(
+    "//third_party/openblas:build_defs.bzl",
+    "if_openblas",
+    "if_enable_openblas",
+)
 def register_extension_info(**kwargs):
     pass
 
@@ -218,6 +223,8 @@ def tf_copts(android_optimization_level_override="-O2", is_external=False):
       + if_tensorrt(["-DGOOGLE_TENSORRT=1"])
       + if_mkl(["-DINTEL_MKL=1", "-DEIGEN_USE_VML"])
       + if_mkl_open_source_only(["-DDO_NOT_USE_ML"])
+      + if_openblas(["-DOPENBLAS"])
+      + if_enable_openblas(["-DENABLE_OPENBLAS"])
       + if_mkl_lnx_x64(["-fopenmp"])
       + if_android_arm(["-mfpu=neon"])
       + if_linux_x86_64(["-msse3"])
@@ -351,6 +358,10 @@ def tf_cc_binary(name,
           [
               "//third_party/mkl:intel_binary_blob",
           ],
+      ) + if_openblas(
+            [
+                "//third_party/openblas:openblas_blob",
+            ]
       ),
       linkopts=linkopts + _rpath_linkopts(name),
       **kwargs)
@@ -673,7 +684,7 @@ def tf_cc_test(name,
           [
               "//third_party/mkl:intel_binary_blob",
           ],
-      ),
+      ) + if_openblas(["//third_party/openblas:openblas_blob"],),
       # Nested select() statements seem not to be supported when passed to
       # linkstatic, and we already have a cuda select() passed in to this
       # function.
@@ -984,6 +995,7 @@ def tf_cuda_library(deps=None, cuda_deps=None, copts=tf_copts(), **kwargs):
           "@local_config_cuda//cuda:cuda_headers"
       ]),
       copts=(copts + if_cuda(["-DGOOGLE_CUDA=1"]) + if_mkl(["-DINTEL_MKL=1"]) +
+             if_openblas(["-DOPENBLAS"]) + if_enable_openblas(["-DENABLE_OPENBLAS"]) +
              if_tensorrt(["-DGOOGLE_TENSORRT=1"])),
       **kwargs)
 
